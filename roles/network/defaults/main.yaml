@@ -1,0 +1,12 @@
+---
+
+required_vars:
+  - wifi_net_dev
+  - wifi_ssid
+  - wifi_psk
+  - wifi_dhcp
+
+required_vars_nodhcp:
+  - wifi_addr
+  - wifi_gateway
+  - wifi_dns

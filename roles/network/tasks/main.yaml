@@ -1,9 +1,27 @@
-- become: yes
+---
+
+- name: check required variables
+  ansible.builtin.fail:
+    msg: "Variable '{{ item }}' is not defined"
+  when: item not in vars
+  with_items: "{{ required_vars }}"
+
+- name: check required variables when not using DHCP
+  ansible.builtin.fail:
+    msg: "Variable '{{ item }}' is not defined"
+  when:
+    - not wifi_dhcp
+    - item not in vars
+  with_items: "{{ required_vars_nodhcp }}"
+
+- name: install wpa_supplicant
+  become: yes
   ansible.builtin.apt:
     name: wpasupplicant
     update_cache: yes
 
-- become: yes
+- name: config wpa_supplicant
+  become: yes
   ansible.builtin.template:
     dest: /etc/wpa_supplicant/wpa_supplicant-{{ wifi_net_dev }}.conf
     src: templates/wpa_supplicant.conf

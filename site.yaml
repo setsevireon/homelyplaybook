@@ -1,0 +1,28 @@
+---
+
+- name: System
+  hosts: all
+  vars_files: [vault.yaml]
+  roles:
+    - role: hardware
+      tags: [sys, hw]
+    - role: network
+      tags: [sys, net]
+      vars:
+        wifi_net_dev: "{{ vault_wifi_net_dev }}"
+        wifi_ssid: "{{ vault_wifi_ssid }}"
+        wifi_psk: "{{ vault_wifi_psk }}"
+        wifi_dhcp: "{{ vault_wifi_dhcp }}"
+        wifi_addr: "{{ vault_wifi_addr }}"
+        wifi_gateway: "{{ vault_wifi_gateway }}"
+        wifi_dns: "{{ vault_wifi_dns }}"
+
+- name: Dotfiles
+  hosts: all
+  roles:
+    - role: bashrc
+      tags: [dotfiles, bash]
+      vars:
+        xdg_config_home: "{{ ansible_env.HOME }}/config"
+        xdg_data_home: "{{ ansible_env.HOME }}/data"
+        xdg_cache_home: "{{ ansible_env.HOME }}/cache"
