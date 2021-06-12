@@ -1,0 +1,41 @@
+- become: yes
+  ansible.builtin.apt:
+    name: wpasupplicant
+    update_cache: yes
+
+- become: yes
+  ansible.builtin.template:
+    dest: /etc/wpa_supplicant/wpa_supplicant-{{ wifi_net_dev }}.conf
+    src: templates/wpa_supplicant.conf
+    owner: root
+    group: root
+    mode: 0600
+  notify: restart wireless network
+
+- become: yes
+  ansible.builtin.template:
+    dest: /etc/systemd/network/25-{{ wifi_net_dev }}.network
+    src: templates/systemd.network
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart wireless network
+
+- become: yes
+  ansible.builtin.service:
+    name: "{{ item }}"
+    enabled: no
+    state: stopped
+  with_items:
+    - NetworkManager
+    - wpa_supplicant
+
+- become: yes
+  ansible.builtin.service:
+    name: "{{ item }}"
+    enabled: yes
+    state: started
+  with_items:
+    - "wpa_supplicant@{{ wifi_net_dev }}"
+    - "systemd-networkd"
+    - "systemd-resolved"

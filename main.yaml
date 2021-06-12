@@ -1,0 +1,14 @@
+---
+
+- name: System
+  hosts: all
+  vars_files: [vars.yaml]
+  handlers:
+    - import_tasks: handlers.yaml
+  tasks:
+    - name: install firmwares & drivers
+      import_tasks: tasks/hardware.yaml
+      tags: [sys, hw]
+    - name: configure wireless network
+      import_tasks: tasks/wifi.yaml
+      tags: [sys, net]

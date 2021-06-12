@@ -1,0 +1,11 @@
+[Match]
+Name={{ wifi_net_dev }}
+
+[Network]
+{% if wifi_dhcp %}
+DHCP=yes
+{% else %}
+Address={{ wifi_addr }}
+Gateway={{ wifi_gateway }}
+DNS={{ wifi_dns }}
+{% endif %}
