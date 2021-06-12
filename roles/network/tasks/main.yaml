@@ -30,7 +30,8 @@
     mode: 0600
   notify: restart wireless network
 
-- become: yes
+- name: create a systemd network unit
+  become: yes
   ansible.builtin.template:
     dest: /etc/systemd/network/25-{{ wifi_net_dev }}.network
     src: templates/systemd.network
@@ -39,7 +40,8 @@
     mode: 0644
   notify: restart wireless network
 
-- become: yes
+- name: stop and disable conflicting services
+  become: yes
   ansible.builtin.service:
     name: "{{ item }}"
     enabled: no
@@ -48,7 +50,8 @@
     - NetworkManager
     - wpa_supplicant
 
-- become: yes
+- name: start and enable services
+  become: yes
   ansible.builtin.service:
     name: "{{ item }}"
     enabled: yes

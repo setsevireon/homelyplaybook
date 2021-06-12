@@ -34,6 +34,7 @@
       tmp={{ ansible_env.XDG_RUNTIME_DIR }}/npm
       init-module={{ ansible_env.XDG_CONFIG_HOME }}/npm/config/npm/init.js
     create: yes
+    mode: 0600
 
 - name: Change NPM configuration file
   ansible.builtin.lineinfile:
