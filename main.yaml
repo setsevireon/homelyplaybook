@@ -12,3 +12,14 @@
     - name: configure wireless network
       import_tasks: tasks/wifi.yaml
       tags: [sys, net]
+
+- name: Dotfiles
+  hosts: all
+  tasks:
+    - name: bashrc
+      vars:
+        xdg_config_home: "{{ ansible_env.HOME }}/config"
+        xdg_data_home: "{{ ansible_env.HOME }}/data"
+        xdg_cache_home: "{{ ansible_env.HOME }}/cache"
+      import_tasks: tasks/bashrc.yaml
+      tags: [dotfiles, bash]
