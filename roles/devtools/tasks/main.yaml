@@ -24,3 +24,18 @@
   ansible.builtin.lineinfile:
     line: "export PATH={{ node_bin_path }}:$PATH"
     path: "{{ ansible_env.HOME }}/.bashrc"
+
+- name: npmrc
+  ansible.builtin.blockinfile:
+    path: "{{ ansible_env.XDG_CONFIG_HOME }}/npm/npmrc"
+    block: |
+      prefix={{ ansible_env.XDG_DATA_HOME }}/npm
+      cache={{ ansible_env.XDG_CACHE_HOME }}/npm
+      tmp={{ ansible_env.XDG_RUNTIME_DIR }}/npm
+      init-module={{ ansible_env.XDG_CONFIG_HOME }}/npm/config/npm/init.js
+    create: yes
+
+- name: Change NPM configuration file
+  ansible.builtin.lineinfile:
+    path: "{{ ansible_env.HOME }}/.bashrc"
+    line: "export NPM_CONFIG_USERCONFIG={{ ansible_env.XDG_CONFIG_HOME }}/npm/npmrc"
