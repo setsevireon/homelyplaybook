@@ -24,3 +24,9 @@ vault_wifi_addr: 192.168.0.42/24
 vault_wifi_gateway: 192.168.0.1
 vault_wifi_dns: 192.168.0.1
 ```
+
+# Runnig
+
+```
+ansible-playbook --ask-vault-pass -i hosts site.yaml
+```
