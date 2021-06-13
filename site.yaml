@@ -1,13 +1,12 @@
 ---
-
 - name: System
   hosts: all
   vars_files: [vault.yaml]
   roles:
     - role: hardware
       tags: [sys, hw]
+
     - role: network
-      tags: [sys, net]
       vars:
         wifi_net_dev: "{{ vault_wifi_net_dev }}"
         wifi_ssid: "{{ vault_wifi_ssid }}"
@@ -16,17 +15,46 @@
         wifi_addr: "{{ vault_wifi_addr }}"
         wifi_gateway: "{{ vault_wifi_gateway }}"
         wifi_dns: "{{ vault_wifi_dns }}"
+      tags: [sys, net]
 
 - name: Dotfiles
   hosts: all
   roles:
     - role: bashrc
-      tags: [dotfiles, bash]
       vars:
         xdg_config_home: "{{ ansible_env.HOME }}/config"
         xdg_data_home: "{{ ansible_env.HOME }}/data"
         xdg_cache_home: "{{ ansible_env.HOME }}/cache"
-    - role: neovim
+      tags: [dotfiles, bash]
+
+    - role: nvim
+      vars:
+        nvim_filetype:
+          - ft: yaml
+            ftset: "shiftwidth=2 tabstop=2 expandtab"
+        nvim_plugin:
+          - name: jiangmiao/auto-pairs
+          - name: tpope/vim-sensible
+          - name: morhetz/gruvbox
+            config: colorscheme gruvbox
+          - name: vim-airline/vim-airline
+            apt: fonts-powerline
+          - name: vim-airline/vim-airline-themes
+          - name: Shougo/deoplete.nvim
+            config: "let g:deoplete#enable_at_startup = 1"
+            cmd: UpdateRemotePlugins
+          - name: Shougo/deoplete-lsp
+          - name: junegunn/fzf
+          - name: junegunn/fzf.vim
+            apt: [fzf, bat, ripgrep, silversearcher-ag]
+            config: "map ; :Files<CR>"
+        nvim_lsp:
+          - client: bashls
+            npm: bash-language-server
+          - client: pyright
+            npm: pyright
+          - client: yamlls
+            npm: yaml-language-server
       tags: [dotfiles, vim]
 
 - name: Tools
@@ -34,3 +62,8 @@
   roles:
     - role: devtools
       tags: [tools, dev]
+
+    - role: misc
+      vars:
+        telegram_version: 2.7.4
+      tags: [tools, misc]

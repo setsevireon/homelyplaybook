@@ -1,0 +1,25 @@
+---
+- import_tasks: neovim.yaml
+- import_tasks: init.yaml
+- import_tasks: filetype.yaml
+
+- name: Install plugin
+  include_tasks: tasks/plugins.yaml
+  loop: "{{ nvim_plugin }}"
+
+- name: Install nvim-lspconfig plugin
+  ansible.builtin.git:
+    repo: https://github.com/neovim/nvim-lspconfig.git
+    dest: '{{ nvim_pack_path }}/neovim/start/nvim-lspconfig'
+
+- name: Generate helptags
+  ansible.builtin.command:
+    cmd: >-
+      /usr/local/bin/nvim 
+      -c "helptags {{ nvim_pack_path }}/neovim/start/nvim-lspconfig/doc"
+      -c q
+  changed_when: false
+
+- name: Neovim builtin LSP config
+  include_tasks: tasks/lsp.yaml
+  loop: "{{ nvim_lsp }}"

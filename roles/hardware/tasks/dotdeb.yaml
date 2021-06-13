@@ -1,0 +1,12 @@
+---
+- name: Copy deb files
+  ansible.builtin.copy:
+    src: "files/{{ item }}"
+    dest: /var/cache/apt/archives
+    mode: 0666
+  become: yes
+
+- name: Install deb files
+  ansible.builtin.apt:
+    deb: "/var/cache/apt/archives/{{ item }}"
+  become: yes

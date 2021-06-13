@@ -1,12 +1,11 @@
 ---
-
 - name: restart wireless network
-  become: yes
   ansible.builtin.systemd:
     name: "{{ item }}"
     state: restarted
     daemon_reload: yes
-  with_items:
+  loop:
     - "wpa_supplicant@{{ wifi_net_dev }}.service"
     - "systemd-networkd.service"
     - "systemd-resolved.service"
+  become: yes

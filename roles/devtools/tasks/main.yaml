@@ -1,28 +1,27 @@
 ---
-
-- name: download nodejs
+- name: Download nodejs
   ansible.builtin.get_url:
     url: "{{ node_bin_url }}"
     dest: "{{ node_dest }}"
 
-- name: create nodejs directory
-  become: yes
+- name: Create nodejs directory
   ansible.builtin.file:
     path: "{{ node_dir }}"
     state: directory
     mode: o=rx
-
-- name: install nodejs
   become: yes
+
+- name: Install nodejs
   ansible.builtin.unarchive:
     src: "{{ node_dest }}"
     remote_src: yes
     dest: "{{ node_dir }}"
     mode: o=rx
+  become: yes
 
-- name: change PATH on bashrc to include nodejs binaries
+- name: Change PATH on bashrc to include nodejs binaries
   ansible.builtin.lineinfile:
-    line: "export PATH={{ node_bin_path }}:$PATH"
+    line: "export PATH={{ node_bin_path }}:{{ ansible_env.XDG_DATA_HOME }}/npm/bin:$PATH"
     path: "{{ ansible_env.HOME }}/.bashrc"
 
 - name: npmrc

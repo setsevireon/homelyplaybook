@@ -1,23 +1,22 @@
 ---
-
-- name: create XDG home directories
+- name: Create XDG home directories
   ansible.builtin.file:
     path: "{{ item }}"
     state: directory
     mode: 0700
-  with_items:
+  loop:
     - "{{ xdg_config_home }}"
     - "{{ xdg_data_home }}"
     - "{{ xdg_cache_home }}"
 
-- name: profile
+- name: Profile
   ansible.builtin.lineinfile:
     path: "{{ ansible_env.HOME }}/.profile"
     line: '[ -n "$BASH_VERSION" ] && [ -f "$HOME/.bashrc" ] && source "$HOME/.bashrc"'
     create: yes
     mode: 0600
 
-- name: bashrc
+- name: Bashrc
   ansible.builtin.blockinfile:
     path: "{{ ansible_env.HOME }}/.bashrc"
     block: "{{ lookup('template', 'templates/bashrc') }}"

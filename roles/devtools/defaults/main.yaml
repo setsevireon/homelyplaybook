@@ -1,5 +1,4 @@
 ---
-
 node_version: v14.17.0
 node_bin_url: "https://nodejs.org/dist/{{ node_version }}/node-{{ node_version }}-linux-x64.tar.gz"
 node_dest: /tmp/node.tar.gz

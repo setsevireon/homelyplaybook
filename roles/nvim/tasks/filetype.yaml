@@ -1,0 +1,8 @@
+---
+- name: FileType config
+  ansible.builtin.lineinfile:
+    path: "{{ ansible_env.XDG_CONFIG_HOME }}/nvim/init.vim"
+    line: "autocmd FileType {{ item.ft }} setlocal {{ item.ftset }}"
+    regexp: "^autocmd FileType {{ item.ft }} setlocal "
+  loop: "{{ nvim_filetype }}"
+  when: nvim_filetype is defined

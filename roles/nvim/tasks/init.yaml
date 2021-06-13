@@ -1,0 +1,20 @@
+---
+- name: Base init.vim
+  ansible.builtin.blockinfile:
+    path: "{{ ansible_env.XDG_CONFIG_HOME }}/nvim/init.vim"
+    block: |
+      set encoding=utf-8
+      filetype plugin indent on
+      syntax enable
+      set number
+      set relativenumber
+      set colorcolumn=80
+      set autoread
+      set ttyfast
+      set ignorecase
+      set smartcase
+      set hlsearch
+      set scrolloff=10
+      retab
+    marker: '"{mark} BASE CONFIG'
+    create: yes

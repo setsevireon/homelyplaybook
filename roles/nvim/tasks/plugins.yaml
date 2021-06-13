@@ -1,0 +1,36 @@
+---
+- name: Pull GitHub repository
+  ansible.builtin.git:
+    dest: "{{ nvim_pack_path }}/{{ item.name | regex_search('(.*)/') }}/start/{{ item.name | regex_search('/(.*)') }}"
+    repo: "https://github.com/{{ item.name }}.git"
+
+- name: Install apt packages
+  ansible.builtin.apt:
+    name: "{{ item.apt }}"
+    update_cache: yes
+  when: item.apt is defined
+  become: yes
+
+- name: Config block
+  ansible.builtin.blockinfile:
+    path: "{{ ansible_env.XDG_CONFIG_HOME }}/nvim/init.vim"
+    block: "{{ item.config }}"
+    marker: '""" {mark} ANSIBLE MANAGED BLOCK ({{ item.name }})'
+  when: item.config is defined
+
+- name: Generate helptags
+  ansible.builtin.command:
+    cmd: >-
+      /usr/local/bin/nvim 
+      -c "helptags {{ nvim_pack_path }}/{{ item.name | regex_search('(.*)/') }}/start/{{ item.name | regex_search('/(.*)') }}/doc"
+      -c q
+  changed_when: false
+
+- name: Vim command
+  ansible.builtin.command:
+    cmd: >-
+      /usr/local/bin/nvim 
+      -c "{{ item.cmd }}"
+      -c q
+  changed_when: false
+  when: item.cmd is defined

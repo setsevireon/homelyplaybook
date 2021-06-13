@@ -1,27 +1,25 @@
 ---
-
-- name: check required variables
+- name: Check required variables
   ansible.builtin.fail:
     msg: "Variable '{{ item }}' is not defined"
   when: item not in vars
-  with_items: "{{ required_vars }}"
+  loop: "{{ required_vars }}"
 
-- name: check required variables when not using DHCP
+- name: Check required variables when not using DHCP
   ansible.builtin.fail:
     msg: "Variable '{{ item }}' is not defined"
   when:
     - not wifi_dhcp
     - item not in vars
-  with_items: "{{ required_vars_nodhcp }}"
+  loop: "{{ required_vars_nodhcp }}"
 
-- name: install wpa_supplicant
-  become: yes
+- name: Install wpa_supplicant
   ansible.builtin.apt:
     name: wpasupplicant
     update_cache: yes
-
-- name: config wpa_supplicant
   become: yes
+
+- name: Config wpa_supplicant
   ansible.builtin.template:
     dest: /etc/wpa_supplicant/wpa_supplicant-{{ wifi_net_dev }}.conf
     src: templates/wpa_supplicant.conf
@@ -29,9 +27,9 @@
     group: root
     mode: 0600
   notify: restart wireless network
-
-- name: create a systemd network unit
   become: yes
+
+- name: Create a systemd network unit
   ansible.builtin.template:
     dest: /etc/systemd/network/25-{{ wifi_net_dev }}.network
     src: templates/systemd.network
@@ -39,24 +37,25 @@
     group: root
     mode: 0644
   notify: restart wireless network
-
-- name: stop and disable conflicting services
   become: yes
+
+- name: Stop and disable conflicting services
   ansible.builtin.service:
     name: "{{ item }}"
     enabled: no
     state: stopped
-  with_items:
+  loop:
     - NetworkManager
     - wpa_supplicant
-
-- name: start and enable services
   become: yes
+
+- name: Start and enable services
   ansible.builtin.service:
     name: "{{ item }}"
     enabled: yes
     state: started
-  with_items:
+  loop:
     - "wpa_supplicant@{{ wifi_net_dev }}"
     - "systemd-networkd"
     - "systemd-resolved"
+  become: yes
