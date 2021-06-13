@@ -1,0 +1,6 @@
+---
+
+nvim_release_tag: nightly
+nvim_bin_url: "https://github.com/neovim/neovim/releases/download/{{ nvim_release_tag }}/nvim-linux64.tar.gz"
+nvim_download_dest: "{{ ansible_env.XDG_RUNTIME_DIR }}/nvim.tar.gz"
+nvim_extract_dest: "{{ ansible_env.XDG_RUNTIME_DIR  }}/nvim_download"

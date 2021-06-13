@@ -1,0 +1,32 @@
+---
+
+- name: uninstall debian package
+  become: yes
+  ansible.builtin.apt:
+    name: neovim
+    state: absent
+
+- name: download binaries
+  ansible.builtin.get_url:
+    url: "{{ nvim_bin_url }}"
+    dest: "{{ nvim_download_dest }}"
+
+- name: create destine diretory
+  ansible.builtin.file:
+    path: "{{ nvim_extract_dest }}"
+    state: directory
+
+- name: extract archive
+  ansible.builtin.unarchive:
+    src: "{{ nvim_download_dest }}"
+    remote_src: yes
+    dest: "{{ nvim_extract_dest }}"
+    creates: "{{ nvim_extract_dest }}/nvim-linux64/bin/nvim"
+
+- name: install binaries
+  become: yes
+  delegate_to: "{{ inventory_hostname }}"
+  ansible.posix.synchronize:
+    src: "{{ nvim_extract_dest }}/nvim-linux64/"
+    dest: /usr/local/
+    compress: no

@@ -26,6 +26,8 @@
         xdg_config_home: "{{ ansible_env.HOME }}/config"
         xdg_data_home: "{{ ansible_env.HOME }}/data"
         xdg_cache_home: "{{ ansible_env.HOME }}/cache"
+    - role: neovim
+      tags: [dotfiles, vim]
 
 - name: Tools
   hosts: all
