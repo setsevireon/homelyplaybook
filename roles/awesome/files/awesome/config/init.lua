@@ -1,0 +1,8 @@
+require("config.error")
+require("config.tag")
+require("config.theme")
+require("config.var")
+require("config.menu")
+require("config.wibar")
+require("config.binding")
+require("config.rule")

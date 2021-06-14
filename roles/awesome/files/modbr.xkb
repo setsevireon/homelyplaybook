@@ -1,0 +1,20 @@
+default xkb_symbols "base" {
+	include "pc+br+inet(evdev)"
+	name[group1]="Modified ABNT2";
+
+	key <TLDE> {[       Escape                                        ]};
+	key <AE06> {[            6, asciicircum, dead_circumflex,  notsign ]};
+	key <AD11> {[  bracketleft,   braceleft,         notsign,  notsign ]};
+	key <AD12> {[ bracketright,  braceright,         notsign,  notsign ]};
+	key <AC10> {[    semicolon,       colon,         notsign,  notsign ]};
+	key <AC11> {[   apostrophe,    quotedbl,         notsign,  notsign ]};
+	key <BKSL> {[   asciitilde,  dead_tilde,         notsign,  notsign ]};
+	key <AB03> {[            c,           C,        ccedilla, Ccedilla ]};
+	key <AB10> {[        slash,    question,          degree,  notsign ]};
+	key <AB11> {[   dead_acute,  dead_grave,           acute,    grave ]};
+
+	replace key <CAPS> {[ VoidSymbol, VoidSymbol ]};
+
+	modifier_map Control { <CAPS> };
+	modifier_map    Lock {  <ESC> };
+};

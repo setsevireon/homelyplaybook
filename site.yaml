@@ -60,6 +60,9 @@
             npm: yaml-language-server
       tags: [dotfiles, vim]
 
+    - role: awesome
+      tags: [dotfiles, wm]
+
 - name: Tools
   hosts: all
   roles:

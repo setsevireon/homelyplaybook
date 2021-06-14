@@ -1,0 +1,39 @@
+---
+- name: Install AwesomeWM packages
+  ansible.builtin.apt:
+    name: [awesome, xorg, xserver-xephyr]
+    update_cache: yes
+  become: yes
+
+- name: Create ~/bin
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/bin"
+    state: directory
+
+- name: Include ~/bin to $PATH
+  ansible.builtin.lineinfile:
+    path: "{{ ansible_env.HOME }}/.bashrc"
+    line: "export PATH={{ ansible_env.HOME }}/bin:$PATH"
+
+- name: Install awmtt
+  ansible.builtin.get_url:
+    url: https://raw.githubusercontent.com/mikar/awmtt/master/awmtt.sh
+    dest: "{{ ansible_env.HOME }}/bin/awmtt"
+    mode: 0755
+
+- name: Copy AwesomeWM config files
+  ansible.builtin.copy:
+    src: files/awesome
+    dest: "{{ ansible_env.XDG_CONFIG_HOME }}"
+
+- name: Copy xinitrc
+  ansible.builtin.copy:
+    src: files/xinitrc
+    dest: "{{ ansible_env.HOME }}/.xinitrc"
+
+- name: Add custom keymap
+  ansible.builtin.copy:
+    src: files/modbr.xkb
+    dest: /usr/share/X11/xkb/symbols/modbr
+    mode: 0644
+  become: yes
