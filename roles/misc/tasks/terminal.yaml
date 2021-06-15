@@ -1,0 +1,34 @@
+---
+- name: Install building dependencies
+  ansible.builtin.apt:
+    name:
+      - cmake
+      - pkg-config
+      - libfreetype6-dev
+      - libfontconfig1-dev
+      - libxcb-xfixes0-dev
+      - python3
+      - cargo
+  become: yes
+
+- name: Checkout Alacritty from GitHub
+  ansible.builtin.git:
+    dest: /usr/src/alacritty/repo
+    repo: https://github.com/alacritty/alacritty.git
+    force: yes
+  become: yes
+
+- name: Build Alacritty
+  ansible.builtin.shell:
+    chdir: /usr/src/alacritty/repo
+    cmd: cargo build --target-dir /usr/src/alacritty/build --release
+    creates: /usr/src/alacritty/build
+  become: yes
+
+- name: Copy Alacritty binary
+  ansible.builtin.copy:
+    src: /usr/src/alacritty/build/release/alacritty
+    remote_src: yes
+    dest: /usr/local/bin/alacritty
+    mode: 0555
+  become: yes
