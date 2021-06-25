@@ -16,5 +16,6 @@
       set hlsearch
       set scrolloff=10
       retab
+      let g:python_host_prog='/usr/bin/python3'
     marker: '"{mark} BASE CONFIG'
     create: yes

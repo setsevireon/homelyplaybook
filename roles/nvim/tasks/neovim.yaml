@@ -29,3 +29,7 @@
     compress: no
   become: yes
   delegate_to: "{{ inventory_hostname }}"
+
+- name: Install Neovim python module
+  ansible.builtin.pip:
+    name: neovim
