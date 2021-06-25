@@ -1,0 +1,57 @@
+---
+- name: Add dpkg architeture i386 to install Android SDK dependencies
+  ansible.builtin.command:
+    cmd: /usr/bin/dpkg --add-architecture i386
+  become: yes
+  changed_when: false
+
+- name: Install Android SDK dependencies
+  ansible.builtin.apt:
+    name:
+      - "libc6:i386"
+      - "libncurses5:i386"
+      - "libstdc++6:i386"
+      - "lib32z1"
+      - "libbz2-1.0:i386"
+    update_cache: yes
+  become: yes
+
+- name: Download Android SDK Command Line Tools
+  ansible.builtin.get_url:
+    url: "{{ android_cmdtools_url }}"
+    dest: "{{ ansible_env.HOME }}/cmdtools.zip"
+  delegate_to: localhost
+
+- name: Create Android Command Line Tools root dir
+  ansible.builtin.file:
+    path: "{{ android_cmdtools_root }}"
+    state: directory
+
+- name: Install Android SDK Command Line Tools
+  ansible.builtin.unarchive:
+    src: "{{ ansible_env.HOME }}/cmdtools.zip"
+    dest: "{{ ansible_env.XDG_DATA_HOME }}/android/sdk/cmdline-tools/"
+    creates: "{{ android_cmdtools_root }}/latest/bin/sdkmanager"
+
+- name: Check stats to determine if directory needs renameing
+  ansible.builtin.stat:
+    path: "{{ android_cmdtools_root }}/cmdline-tools"
+  register: cmdline_dir_stat
+
+- name: Renanaming cmdline-tools dir
+  ansible.builtin.command:
+    cmd: >-
+      mv
+      "{{ android_cmdtools_root }}/cmdline-tools"
+      "{{ android_cmdtools_root }}/latest"
+  when: cmdline_dir_stat.stat.exists
+
+- name: Setting Android SDK ENV on bashrc
+  ansible.builtin.blockinfile:
+    path: "{{ ansible_env.HOME }}/.bashrc"
+    block: |
+      export ANDROID_SDK_ROOT="{{ ansible_env.XDG_DATA_HOME }}/android/sdk"
+      export ANDROID_HOME=$ANDROID_SDK_ROOT
+      export ANDROID_AVD_HOME="{{ ansible_env.HOME }}/virt/avd"
+      export PATH="$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/emulator:$PATH"
+    marker: "# {mark} ANSIBLE MANAGED BLOCK (Android SDK)"

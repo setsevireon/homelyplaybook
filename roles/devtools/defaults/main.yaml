@@ -4,3 +4,8 @@ node_bin_url: "https://nodejs.org/dist/{{ node_version }}/node-{{ node_version }
 node_dest: /tmp/node.tar.gz
 node_dir: /usr/local/lib/nodejs
 node_bin_path: "{{ node_dir }}/node-{{ node_version }}-linux-x64/bin"
+
+android_studio_release: "7302050"
+android_cmdtools_url: "https://dl.google.com/android/repository/commandlinetools-linux-{{ android_studio_release }}_latest.zip"
+android_sdk_root: "{{ ansible_env.XDG_DATA_HOME }}/android/sdk"
+android_cmdtools_root: "{{ android_sdk_root }}/cmdline-tools"
