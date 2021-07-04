@@ -1,6 +1,10 @@
 ---
+xdg_config_home: "{{ ansible_user_dir }}/.config"
+xdg_data_home: "{{ ansible_user_dir }}/.local/share"
+xdg_cache_home: "{{ ansible_user_dir }}/.cache"
+xdg_runtime_dir: "/run/user/{{ ansible_user_uid }}"
+
 nvim_release_tag: nightly
 nvim_bin_url: "https://github.com/neovim/neovim/releases/download/{{ nvim_release_tag }}/nvim-linux64.tar.gz"
-nvim_download_dest: "{{ ansible_env.XDG_RUNTIME_DIR }}/nvim.tar.gz"
-nvim_extract_dest: "{{ ansible_env.XDG_RUNTIME_DIR  }}/nvim_download"
-nvim_pack_path: "{{ ansible_env.XDG_DATA_HOME }}/nvim/site/pack"
+nvim_download_dest: "{{ xdg_runtime_dir }}/nvim.tar.gz"
+nvim_extract_dest: "{{ xdg_runtime_dir  }}/nvim_download"

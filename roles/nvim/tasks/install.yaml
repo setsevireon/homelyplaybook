@@ -10,7 +10,7 @@
     url: "{{ nvim_bin_url }}"
     dest: "{{ nvim_download_dest }}"
 
-- name: Create destine diretory
+- name: Create extract diretory
   ansible.builtin.file:
     path: "{{ nvim_extract_dest }}"
     state: directory
@@ -20,13 +20,14 @@
     src: "{{ nvim_download_dest }}"
     remote_src: yes
     dest: "{{ nvim_extract_dest }}"
-    creates: "{{ nvim_extract_dest }}/nvim-linux64/bin/nvim"
+  changed_when: false
 
 - name: Install binaries
   ansible.posix.synchronize:
     src: "{{ nvim_extract_dest }}/nvim-linux64/"
     dest: /usr/local/
     compress: no
+    checksum: yes
   become: yes
   delegate_to: "{{ inventory_hostname }}"
 
