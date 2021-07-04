@@ -1,7 +1,9 @@
 ---
-- name: Add dpkg architeture i386 to install Android SDK dependencies
-  ansible.builtin.command:
-    cmd: /usr/bin/dpkg --add-architecture i386
+- name: Add dpkg architeture i386
+  ansible.builtin.lineinfile:
+    dest: /var/lib/dpkg/arch
+    line: i386
+    create: yes
   become: yes
   changed_when: false
 
@@ -16,22 +18,29 @@
     update_cache: yes
   become: yes
 
+- name: Check if cmdline-tools is already installed
+  ansible.builtin.stat:
+    path: "{{ android_cmdtools_root }}/latest/bin/sdkmanager"
+  register: cmdline_tools_installed
+
 - name: Download Android SDK Command Line Tools
   ansible.builtin.get_url:
     url: "{{ android_cmdtools_url }}"
-    dest: "{{ ansible_env.HOME }}/cmdtools.zip"
+    dest: /tmp/cmdtools.zip
+  when: not cmdline_tools_installed.stat.exists
   delegate_to: localhost
 
 - name: Create Android Command Line Tools root dir
   ansible.builtin.file:
     path: "{{ android_cmdtools_root }}"
     state: directory
+  when: not cmdline_tools_installed.stat.exists
 
 - name: Install Android SDK Command Line Tools
   ansible.builtin.unarchive:
-    src: "{{ ansible_env.HOME }}/cmdtools.zip"
-    dest: "{{ ansible_env.XDG_DATA_HOME }}/android/sdk/cmdline-tools/"
-    creates: "{{ android_cmdtools_root }}/latest/bin/sdkmanager"
+    src: /tmp/cmdtools.zip
+    dest: "{{ xdg_data_home }}/android/sdk/cmdline-tools/"
+  when: not cmdline_tools_installed.stat.exists
 
 - name: Check stats to determine if directory needs renameing
   ansible.builtin.stat:
@@ -48,10 +57,10 @@
 
 - name: Setting Android SDK ENV on bashrc
   ansible.builtin.blockinfile:
-    path: "{{ ansible_env.HOME }}/.bashrc"
+    path: "{{ ansible_user_dir }}/.bashrc"
     block: |
-      export ANDROID_SDK_ROOT="{{ ansible_env.XDG_DATA_HOME }}/android/sdk"
+      export ANDROID_SDK_ROOT="{{ xdg_data_home }}/android/sdk"
       export ANDROID_HOME=$ANDROID_SDK_ROOT
-      export ANDROID_AVD_HOME="{{ ansible_env.HOME }}/virt/avd"
+      export ANDROID_AVD_HOME="$ANDROID_HOME/avd"
       export PATH="$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/emulator:$PATH"
     marker: "# {mark} ANSIBLE MANAGED BLOCK (Android SDK)"

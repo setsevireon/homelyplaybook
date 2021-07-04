@@ -1,74 +1,18 @@
 ---
-- name: System
-  hosts: all
-  vars_files: [vault.yaml]
-  roles:
-    - role: hardware
-      tags: [sys, hw]
-
-    - role: network
-      vars:
-        wifi_net_dev: "{{ vault_wifi_net_dev }}"
-        wifi_ssid: "{{ vault_wifi_ssid }}"
-        wifi_psk: "{{ vault_wifi_psk }}"
-        wifi_dhcp: "{{ vault_wifi_dhcp }}"
-        wifi_addr: "{{ vault_wifi_addr }}"
-        wifi_gateway: "{{ vault_wifi_gateway }}"
-        wifi_dns: "{{ vault_wifi_dns }}"
-      tags: [sys, net]
+- import_playbook: system.yaml
+- import_playbook: shell.yaml
+- import_playbook: dev.yaml
+- import_playbook: nvim.yaml
 
 - name: Dotfiles
   hosts: all
   roles:
-    - role: bashrc
-      vars:
-        xdg_config_home: "{{ ansible_env.HOME }}/config"
-        xdg_data_home: "{{ ansible_env.HOME }}/data"
-        xdg_cache_home: "{{ ansible_env.HOME }}/cache"
-      tags: [dotfiles, bash]
-
-    - role: nvim
-      vars:
-        nvim_filetype:
-          - ft: yaml
-            ftset: "shiftwidth=2 tabstop=2 expandtab"
-        nvim_plugin:
-          - name: jiangmiao/auto-pairs
-          - name: tpope/vim-sensible
-          - name: morhetz/gruvbox
-            config: colorscheme gruvbox
-          - name: vim-airline/vim-airline
-            apt: fonts-powerline
-          - name: vim-airline/vim-airline-themes
-          - name: Shougo/deoplete.nvim
-            config: |
-              let g:deoplete#enable_at_startup = 1
-              inoremap <expr> <TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
-              inoremap <expr> <S-TAB> pumvisible() ? "\<C-p>" : "\<TAB>"
-            cmd: UpdateRemotePlugins
-          - name: Shougo/deoplete-lsp
-          - name: junegunn/fzf
-          - name: junegunn/fzf.vim
-            apt: [fzf, bat, ripgrep, silversearcher-ag]
-            config: "map ; :Files<CR>"
-        nvim_lsp:
-          - client: bashls
-            npm: bash-language-server
-          - client: pyright
-            npm: pyright
-          - client: yamlls
-            npm: yaml-language-server
-      tags: [dotfiles, vim]
-
     - role: awesome
       tags: [dotfiles, wm]
 
 - name: Tools
   hosts: all
   roles:
-    - role: devtools
-      tags: [tools, dev]
-
     - role: misc
       vars:
         telegram_version: 2.7.4

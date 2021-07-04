@@ -5,12 +5,25 @@
     update_cache: yes
   become: yes
 
-- name: Install deb files
-  include_tasks: tasks/dotdeb.yaml
+- name: Copy deb files
+  ansible.builtin.copy:
+    src: "files/{{ item }}"
+    dest: /var/cache/apt/archives
+    mode: 0666
   loop:
     - cnijfilter2_5.60-1_amd64.deb
     - scangearmp2_3.60-1_amd64.deb
     - realtek-rtl88xxau-dkms_5.6.4.2~git20210118-0kali1_all.deb
+  become: yes
+
+- name: Install deb files
+  ansible.builtin.apt:
+    deb: "/var/cache/apt/archives/{{ item }}"
+  loop:
+    - cnijfilter2_5.60-1_amd64.deb
+    - scangearmp2_3.60-1_amd64.deb
+    - realtek-rtl88xxau-dkms_5.6.4.2~git20210118-0kali1_all.deb
+  become: yes
 
 - name: Probe wifi module
   community.general.modprobe:

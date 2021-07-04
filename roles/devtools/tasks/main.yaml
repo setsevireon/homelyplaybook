@@ -1,3 +1,4 @@
 ---
+- import_tasks: tasks/python.yaml
 - import_tasks: tasks/nodejs.yaml
 - import_tasks: tasks/android.yaml

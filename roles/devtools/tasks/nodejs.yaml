@@ -1,14 +1,21 @@
 ---
+- name: Check if nodejs is already installed
+  ansible.builtin.stat:
+    path: "{{ node_bin_path }}/node"
+  register: node_installed
+
 - name: Download nodejs
   ansible.builtin.get_url:
     url: "{{ node_bin_url }}"
     dest: "{{ node_dest }}"
+  when: not node_installed.stat.exists
 
 - name: Create nodejs directory
   ansible.builtin.file:
     path: "{{ node_dir }}"
     state: directory
     mode: o=rx
+  when: not node_installed.stat.exists
   become: yes
 
 - name: Install nodejs
@@ -17,25 +24,26 @@
     remote_src: yes
     dest: "{{ node_dir }}"
     mode: o=rx
+  when: not node_installed.stat.exists
   become: yes
 
 - name: Change PATH on bashrc to include nodejs binaries
   ansible.builtin.lineinfile:
-    line: "export PATH={{ node_bin_path }}:{{ ansible_env.XDG_DATA_HOME }}/npm/bin:$PATH"
-    path: "{{ ansible_env.HOME }}/.bashrc"
+    line: "export PATH={{ node_bin_path }}:{{ xdg_data_home }}/npm/bin:$PATH"
+    path: "{{ ansible_user_dir }}/.bashrc"
 
 - name: npmrc
   ansible.builtin.blockinfile:
-    path: "{{ ansible_env.XDG_CONFIG_HOME }}/npm/npmrc"
+    path: "{{ xdg_config_home }}/npm/npmrc"
     block: |
-      prefix={{ ansible_env.XDG_DATA_HOME }}/npm
-      cache={{ ansible_env.XDG_CACHE_HOME }}/npm
-      tmp={{ ansible_env.XDG_RUNTIME_DIR }}/npm
-      init-module={{ ansible_env.XDG_CONFIG_HOME }}/npm/config/npm/init.js
+      prefix={{ xdg_data_home }}/npm
+      cache={{ xdg_cache_home }}/npm
+      tmp=/run/user/{{ ansible_user_uid }}/npm
+      init-module={{ xdg_config_home }}/npm/config/npm/init.js
     create: yes
     mode: 0600
 
 - name: Change NPM configuration file
   ansible.builtin.lineinfile:
-    path: "{{ ansible_env.HOME }}/.bashrc"
-    line: "export NPM_CONFIG_USERCONFIG={{ ansible_env.XDG_CONFIG_HOME }}/npm/npmrc"
+    path: "{{ ansible_user_dir }}/.bashrc"
+    line: "export NPM_CONFIG_USERCONFIG={{ xdg_config_home }}/npm/npmrc"

@@ -1,0 +1,6 @@
+---
+- name: Dev Tools
+  hosts: localhost
+  roles:
+    - role: devtools
+      tags: [tools, dev]
