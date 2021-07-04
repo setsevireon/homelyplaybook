@@ -1,10 +1,15 @@
-# My home desktop bootstrap (Ansible playbook)
+# Connecting the dots
+
+My home desktop bootstrap using Ansible.
+
+This installs firmware, my most used software, my dotfiles, configures my
+network, programming languages environment and some development tools.
 
 # Requirements
 
 * Debian Bullseye
 * Python3
-* Ansible (ansible.posix, comunity.general)
+* Ansible (ansible.posix, community.general)
 * a [vault.yaml](#vault-variables) file
 
 # Vault variables
@@ -25,7 +30,7 @@ vault_wifi_gateway: 192.168.0.1
 vault_wifi_dns: 192.168.0.1
 ```
 
-# Runnig
+# Running
 
 ```
 ansible-playbook --ask-vault-pass -i hosts site.yaml
