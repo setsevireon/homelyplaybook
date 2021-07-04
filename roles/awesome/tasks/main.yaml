@@ -5,26 +5,10 @@
     update_cache: yes
   become: yes
 
-- name: Create ~/bin
-  ansible.builtin.file:
-    path: "{{ ansible_env.HOME }}/bin"
-    state: directory
-
-- name: Include ~/bin to $PATH
-  ansible.builtin.lineinfile:
-    path: "{{ ansible_env.HOME }}/.bashrc"
-    line: "export PATH={{ ansible_env.HOME }}/bin:$PATH"
-
-- name: Install awmtt
-  ansible.builtin.get_url:
-    url: https://raw.githubusercontent.com/mikar/awmtt/master/awmtt.sh
-    dest: "{{ ansible_env.HOME }}/bin/awmtt"
-    mode: 0755
-
-- name: Copy AwesomeWM config files
-  ansible.builtin.copy:
-    src: files/awesome
-    dest: "{{ ansible_env.XDG_CONFIG_HOME }}"
+- name: Clone setsevireon/AwesomeConfig repo
+  ansible.builtin.git:
+    repo: https://github.com/setsevireon/AwesomeConfig.git
+    dest: "{{ xdg_config_home }}/awesome"
 
 - name: Copy xinitrc
   ansible.builtin.copy:

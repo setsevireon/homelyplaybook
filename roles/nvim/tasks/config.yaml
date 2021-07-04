@@ -1,5 +1,5 @@
 ---
 - name: Clone setsevireon/config.nvim repo
   ansible.builtin.git:
-    repo: https://github.com/setsevireon/config.nvim
+    repo: https://github.com/setsevireon/config.nvim.git
     dest: "{{ xdg_config_home }}/nvim"

@@ -1,0 +1,6 @@
+---
+- name: AwesomeWM
+  hosts: all
+  roles:
+    - role: awesome
+      tags: [awsome, wm]
