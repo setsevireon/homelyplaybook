@@ -13,3 +13,6 @@ android_studio_release: "7302050"
 android_cmdtools_url: "https://dl.google.com/android/repository/commandlinetools-linux-{{ android_studio_release }}_latest.zip"
 android_sdk_root: "{{ xdg_data_home }}/android/sdk"
 android_cmdtools_root: "{{ android_sdk_root }}/cmdline-tools"
+
+go_version: go1.16.5
+go_url: "https://golang.org/dl/{{ go_version }}.linux-amd64.tar.gz"
