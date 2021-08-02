@@ -22,4 +22,6 @@ alias la='ll -A'
 alias cp='cp --interactive --verbose --reflink=auto'
 alias rm='rm --interactive=once --verbose'
 alias gpg='gpg --homedir {{ ansible_user_dir }}/secrets/gnupg'
+alias mitmproxy='mitmproxy --set confdir={{ xdg_config_home }}/mitmproxy'
+alias mitmweb='mitmweb --set confdir={{ xdg_config_home }}/mitmproxy'
 [ -f /etc/bash_completion ] && source /etc/bash_completion
