@@ -47,3 +47,8 @@
   ansible.builtin.lineinfile:
     path: "{{ ansible_user_dir }}/.bashrc"
     line: "export NPM_CONFIG_USERCONFIG={{ xdg_config_home }}/npm/npmrc"
+
+- name: Change YARN configuration file
+  ansible.builtin.lineinfile:
+    path: "{{ ansible_user_dir }}/.bashrc"
+    line: "alias yarn='yarn --use-yarnrc {{ xdg_config_home }}/yarn/config'"

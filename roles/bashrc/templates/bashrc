@@ -7,6 +7,7 @@ export XDG_CONFIG_HOME={{ xdg_config_home }}
 export XDG_DATA_HOME={{ xdg_data_home }}
 export XDG_CACHE_HOME={{ xdg_cache_home }}
 export GNUPGHOME={{ ansible_user_dir }}/secrets/gnupg
+export LESSHISTFILE=-
 export PATH=$HOME/bin:$PATH
 HISTCONTROL=ignoreboth
 HISTSIZE=100000
@@ -24,4 +25,5 @@ alias rm='rm --interactive=once --verbose'
 alias gpg='gpg --homedir {{ ansible_user_dir }}/secrets/gnupg'
 alias mitmproxy='mitmproxy --set confdir={{ xdg_config_home }}/mitmproxy'
 alias mitmweb='mitmweb --set confdir={{ xdg_config_home }}/mitmproxy'
+alias wget='wget --hsts-file={{ xdg_cache_home }}/wget-hsts'
 [ -f /etc/bash_completion ] && source /etc/bash_completion
