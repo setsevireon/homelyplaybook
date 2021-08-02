@@ -8,7 +8,6 @@
       - libfontconfig1-dev
       - libxcb-xfixes0-dev
       - python3
-      - cargo
   become: yes
 
 - name: Checkout Alacritty from GitHub
