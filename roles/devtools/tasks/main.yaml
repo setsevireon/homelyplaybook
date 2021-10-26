@@ -1,6 +1,0 @@
----
-- import_tasks: tasks/python.yaml
-- import_tasks: tasks/nodejs.yaml
-- import_tasks: tasks/android.yaml
-- import_tasks: tasks/go.yaml
-- import_tasks: tasks/rust.yaml
