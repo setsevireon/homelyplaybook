@@ -1,0 +1,27 @@
+shopt -s checkwinsize
+shopt -s cdspell
+shopt -s histappend
+umask 007
+export XDG_CONFIG_HOME={{ xdg_config_home }}
+export XDG_DATA_HOME={{ xdg_data_home }}
+export XDG_CACHE_HOME={{ xdg_cache_home }}
+export GNUPGHOME={{ ansible_user_dir }}/secrets/gnupg
+export LESSHISTFILE=-
+export PATH=$HOME/bin:$HOME/.local$HOME/bin:/bin:$PATH
+HISTCONTROL=ignoreboth
+HISTSIZE=100000
+HISTFILESIZE=200000
+HISTFILE=${XDG_CACHE_HOME}/bash_history
+PROMPT_COMMAND="history -a; history -c; history -r;"
+PROMPT_DIRTRIM=2
+PS1="[\[\e[33m\]\w\[\e[m\]]\[\e[32m\]->\[\e[m\] "
+alias ls='ls --color=auto'
+alias grep='grep --color=auto'
+alias fgrep='fgrep --color=auto'
+alias egrep='egrep --color=auto'
+alias ll='ls -l --group-directories-first'
+alias la='ll -A'
+alias cp='cp --interactive --verbose --reflink=auto'
+alias rm='rm --interactive=once --verbose'
+alias wget='wget --hsts-file=${XDG_CACHE_HOME}/wget-hsts'
+[ -f /etc/bash_completion ] && source /etc/bash_completion

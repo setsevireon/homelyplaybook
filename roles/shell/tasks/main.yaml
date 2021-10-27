@@ -7,3 +7,17 @@
     - "{{ xdg_config_home }}"
     - "{{ xdg_data_home }}"
     - "{{ xdg_cache_home }}"
+
+- name: Ensure presence of the line to source bashrc in .profile
+  ansible.builtin.lineinfile:
+    create: yes
+    line: '[ -n "$BASH_VERSION" ] && [ -f "$HOME/.bashrc" ] && source "$HOME/.bashrc"'
+    path: "{{ ansible_user_dir }}/.profile"
+
+- name: Ensure bashrc has a basic config
+  ansible.builtin.blockinfile:
+    block: "{{ lookup('template', 'files/bashrc') }}"
+    create: yes
+    insertbefore: BOF
+    marker: "#{mark} ANSIBLE MANAGED BLOCK (base)"
+    path: "{{ ansible_user_dir }}/.bashrc"
