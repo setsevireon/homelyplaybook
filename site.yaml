@@ -5,3 +5,5 @@
       tags: [shell, basic]
     - role: linuxbrew
       tags: [pkg, basic]
+    - role: nvim
+      tags: [vim, nvim, tools]

@@ -1,0 +1,12 @@
+---
+- name: Install Neovim HEAD
+  community.general.homebrew:
+    name: neovim
+    path: "{{ linuxbrew_dir }}/bin"
+    update_homebrew: yes
+    state: present
+
+- name: Clone setsevireon/config.nvim repo
+  ansible.builtin.git:
+    repo: https://github.com/setsevireon/config.nvim.git
+    dest: "{{ xdg_config_home }}/nvim"
