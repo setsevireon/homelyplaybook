@@ -7,3 +7,5 @@
       tags: [pkg, basic]
     - role: nvim
       tags: [vim, nvim, tools]
+    - role: awesome
+      tags: [wm, desktop]

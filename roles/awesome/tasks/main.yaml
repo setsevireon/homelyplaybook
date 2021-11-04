@@ -1,0 +1,16 @@
+---
+- name: Install AwesomeWM
+  ansible.builtin.apt:
+    name: [awesome, xorg, xserver-xephyr]
+    update_cache: yes
+  become: yes
+
+- name: Clone setsevireon/AwesomeConfig repo
+  ansible.builtin.git:
+    repo: https://github.com/setsevireon/AwesomeConfig
+    dest: "{{ config_dir }}/awesome"
+
+- name: Copy xinitrc
+  ansible.builtin.copy:
+    src: files/xinitrc
+    dest: "{{ ansible_user_dir }}/.xinitrc"
