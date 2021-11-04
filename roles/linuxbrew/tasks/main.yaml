@@ -1,13 +1,21 @@
 ---
+- name: Check if Homebrew is installed
+  ansible.builtin.stat:
+    path: "{{ linuxbrew_dir }}/bin/brew"
+  register: homebrew_bin_stat
+  changed_when: not homebrew_bin_stat.stat.exists
+
 - name: Download Homebrew tarball
   ansible.builtin.get_url:
     dest: /tmp/homebrew_tarball.tar.gz
     url: "{{ linuxbrew_url }}"
+  when: not homebrew_bin_stat.stat.exists
 
 - name: Download Homebrew core tarball
   ansible.builtin.get_url:
     dest: /tmp/homebrew_core_tarball.tar.gz
     url: "{{ linuxbrew_core_url }}"
+  when: not homebrew_bin_stat.stat.exists
 
 - name: Create Homebrew home directory
   ansible.builtin.file:
@@ -29,19 +37,19 @@
 
 - name: Extract Homebrew to install dir
   ansible.builtin.unarchive:
-    creates: "{{ linuxbrew_dir }}/Library/Taps/homebrew/homebrew-core/LICENSE.txt"
     dest: "{{ linuxbrew_dir }}"
     extra_opts: "--strip-components=1"
     remote_src: yes
     src: /tmp/homebrew_tarball.tar.gz
+  when: not homebrew_bin_stat.stat.exists
 
 - name: Extract Homebrew core
   ansible.builtin.unarchive:
-    creates: "{{ linuxbrew_dir }}/bin/brew"
     dest: "{{ linuxbrew_dir }}/Library/Taps/homebrew/homebrew-core"
     extra_opts: "--strip-components=1"
     remote_src: yes
     src: /tmp/homebrew_core_tarball.tar.gz
+  when: not homebrew_bin_stat.stat.exists
 
 - name: Ensure Homebrew env is in bashrc
   ansible.builtin.blockinfile:
@@ -57,7 +65,7 @@
     path: "{{ ansible_user_dir }}/.bashrc"
 
 - name: Update Homebrew
-  ansible.builtin.homebrew:
+  community.general.homebrew:
     path: "{{ linuxbrew_dir }}/bin"
     update_homebrew: yes
     upgrade_all: yes
