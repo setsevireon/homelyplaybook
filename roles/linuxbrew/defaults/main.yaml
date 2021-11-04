@@ -1,0 +1,6 @@
+---
+linuxbrew_user: "{{ lookup('env', 'USER') }}"
+linuxbrew_home: /home/linuxbrew
+linuxbrew_dir: "{{ linuxbrew_home }}/.linuxbrew"
+linuxbrew_url: https://github.com/Homebrew/brew/tarball/master
+linuxbrew_core_url: https://github.com/Homebrew/homebrew-core/tarball/master

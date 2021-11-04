@@ -1,0 +1,63 @@
+---
+- name: Download Homebrew tarball
+  ansible.builtin.get_url:
+    dest: /tmp/homebrew_tarball.tar.gz
+    url: "{{ linuxbrew_url }}"
+
+- name: Download Homebrew core tarball
+  ansible.builtin.get_url:
+    dest: /tmp/homebrew_core_tarball.tar.gz
+    url: "{{ linuxbrew_core_url }}"
+
+- name: Create Homebrew home directory
+  ansible.builtin.file:
+    owner: "{{ linuxbrew_user }}"
+    path: "{{ linuxbrew_home }}"
+    state: directory
+  become: yes
+
+- name: Create Homebrew directory
+  ansible.builtin.file:
+    path: "{{ linuxbrew_dir }}"
+    state: directory
+
+- name: Create Homebrew core directory
+  ansible.builtin.file:
+    path: "{{ linuxbrew_dir }}/Library/Taps/homebrew/homebrew-core"
+    recurse: yes
+    state: directory
+
+- name: Extract Homebrew to install dir
+  ansible.builtin.unarchive:
+    creates: "{{ linuxbrew_dir }}/Library/Taps/homebrew/homebrew-core/LICENSE.txt"
+    dest: "{{ linuxbrew_dir }}"
+    extra_opts: "--strip-components=1"
+    remote_src: yes
+    src: /tmp/homebrew_tarball.tar.gz
+
+- name: Extract Homebrew core
+  ansible.builtin.unarchive:
+    creates: "{{ linuxbrew_dir }}/bin/brew"
+    dest: "{{ linuxbrew_dir }}/Library/Taps/homebrew/homebrew-core"
+    extra_opts: "--strip-components=1"
+    remote_src: yes
+    src: /tmp/homebrew_core_tarball.tar.gz
+
+- name: Ensure Homebrew env is in bashrc
+  ansible.builtin.blockinfile:
+    block: |
+      export HOMEBREW_PREFIX={{ linuxbrew_dir }}
+      export HOMEBREW_CELLAR={{ linuxbrew_dir }}/Cellar
+      export HOMEBREW_REPOSITORY={{ linuxbrew_dir }}
+      export HOMEBREW_SHELLENV_PREFIX={{ linuxbrew_dir }}
+      export PATH={{ linuxbrew_dir }}/bin:$PATH
+      export MANPATH={{ linuxbrew_dir }}/share/man:$MANPATH
+      export INFOPATH={{ linuxbrew_dir }}/share/info:$INFOPATH
+    marker: "#{mark} ANSIBLE MANAGED BLOCK (Homebrew)"
+    path: "{{ ansible_user_dir }}/.bashrc"
+
+- name: Update Homebrew
+  ansible.builtin.homebrew:
+    path: "{{ linuxbrew_dir }}/bin"
+    update_homebrew: yes
+    upgrade_all: yes

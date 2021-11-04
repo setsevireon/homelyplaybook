@@ -3,3 +3,5 @@
   roles:
     - role: shell
       tags: [shell, basic]
+    - role: linuxbrew
+      tags: [pkg, basic]
